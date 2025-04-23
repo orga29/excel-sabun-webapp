@@ -19,7 +19,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.image("スクリーンショット 2025-04-24 054018.png", width=200)
+st.image("logo.png", width=200)
 st.title("温市 Excel差分比較ツール")
 
 st.markdown("""
