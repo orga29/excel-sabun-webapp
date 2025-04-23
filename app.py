@@ -16,6 +16,13 @@ st.markdown("""
             border-radius: 10px;
             padding: 2rem;
         }
+        .stFileUploader > label > div:first-child {
+            display: none; /* ラベル非表示 */
+        }
+        .stFileUploader label span {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -87,7 +94,6 @@ def to_excel(df):
     ws = wb.active
     ws.title = '差分結果'
 
-    # 書式設定用のスタイル
     header_font = Font(bold=True, color="FFFFFF")
     header_fill = PatternFill("solid", fgColor="4CAF50")
     border = Border(left=Side(style='thin'), right=Side(style='thin'),
@@ -119,8 +125,8 @@ def to_excel(df):
     output.seek(0)
     return output
 
-file1 = st.file_uploader("暫定データファイル (.xlsx)", type="xlsx")
-file2 = st.file_uploader("確定データファイル (.xlsx)", type="xlsx")
+file1 = st.file_uploader("📂 暫定データファイルをここにドラッグ または 参照から選択", type="xlsx")
+file2 = st.file_uploader("📂 確定データファイルをここにドラッグ または 参照から選択", type="xlsx")
 
 if file1 and file2:
     df1 = pd.read_excel(file1, header=None).iloc[4:].reset_index(drop=True)
