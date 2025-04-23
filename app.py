@@ -1,8 +1,9 @@
-
 import streamlit as st
 import pandas as pd
 import datetime
 from io import BytesIO
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
 st.set_page_config(page_title="温市Excel差分ツール", page_icon="🌿", layout="centered")
 st.markdown("""
@@ -18,7 +19,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.image("logo.png", width=200)
+st.image("スクリーンショット 2025-04-24 054018.png", width=200)
 st.title("温市 Excel差分比較ツール")
 
 st.markdown("""
@@ -82,9 +83,39 @@ def compute_diff(map1: dict, map2: dict) -> pd.DataFrame:
     return df
 
 def to_excel(df):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = '差分結果'
+
+    # 書式設定用のスタイル
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="4CAF50")
+    border = Border(left=Side(style='thin'), right=Side(style='thin'),
+                    top=Side(style='thin'), bottom=Side(style='thin'))
+
+    headers = list(df.columns)
+    ws.append(headers)
+
+    for col_num, col in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
+        ws.column_dimensions[cell.column_letter].width = 14
+
+    for row in df.itertuples(index=False):
+        ws.append(row)
+        for col_num in range(1, len(headers) + 1):
+            cell = ws.cell(row=ws.max_row, column=col_num)
+            cell.border = border
+            if isinstance(cell.value, int):
+                cell.alignment = Alignment(horizontal='right')
+            else:
+                cell.alignment = Alignment(horizontal='left')
+
     output = BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='差分結果')
+    wb.save(output)
     output.seek(0)
     return output
 
