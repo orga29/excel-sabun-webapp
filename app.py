@@ -25,23 +25,28 @@ st.markdown("""
         }
         .stFileUploader div[role="button"] {
             position: relative;
+            color: transparent !important;
         }
         .stFileUploader div[role="button"]::before {
             content: "ファイルをここにドラッグ またはクリックして選択";
             font-size: 1rem;
-            color: #333;
-            display: block;
-            padding-bottom: 4px;
+            color: #333 !important;
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            z-index: 10;
         }
         .stFileUploader div[role="button"]::after {
             content: "※ 200MBまで／拡張子 .xlsx のみ対応";
             font-size: 0.85rem;
-            color: #666;
-            display: block;
+            color: #666 !important;
+            position: absolute;
+            bottom: 10%;
+            left: 20%;
+            z-index: 10;
         }
-        .stFileUploader div[role="button"] span,
-        .stFileUploader div[role="button"] > * {
-            font-size: 0 !important;
+        .stFileUploader div[role="button"] * {
+            visibility: hidden !important;
         }
     </style>
 """, unsafe_allow_html=True)
