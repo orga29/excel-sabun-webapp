@@ -23,6 +23,13 @@ st.markdown("""
             font-size: 1.1rem;
             font-weight: bold;
         }
+        .stFileUploader div[role="button"]::after {
+            content: "ファイルをここにドラッグ または クリックして選択（最大200MB・.xlsx）";
+            color: #333;
+            display: block;
+            padding-top: 8px;
+            font-size: 0.9rem;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -136,8 +143,8 @@ def to_excel(df):
     output.seek(0)
     return output
 
-file1 = st.file_uploader("📂 暫定データファイルをここにドラッグ または 参照から選択", type="xlsx")
-file2 = st.file_uploader("📂 確定データファイルをここにドラッグ または 参照から選択", type="xlsx")
+file1 = st.file_uploader("📂 暫定データファイル", type="xlsx")
+file2 = st.file_uploader("📂 確定データファイル", type="xlsx")
 
 if file1 and file2:
     df1 = pd.read_excel(file1, header=None).iloc[4:].reset_index(drop=True)
