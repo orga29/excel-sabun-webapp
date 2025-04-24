@@ -34,6 +34,9 @@ st.markdown("""
             display: block;
             padding-bottom: 4px;
         }
+        .stFileUploader div[role="button"] span {
+            display: none !important;
+        }
         .stFileUploader div[role="button"]::after {
             content: "※ 200MBまで／拡張子 .xlsx のみ対応";
             font-size: 0.85rem;
