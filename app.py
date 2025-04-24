@@ -47,6 +47,8 @@ st.markdown("""
         }
         .stFileUploader div[role="button"] * {
             visibility: hidden !important;
+            display: none !important;
+            opacity: 0 !important;
         }
     </style>
 """, unsafe_allow_html=True)
