@@ -17,7 +17,7 @@ st.markdown("""
             padding: 2rem;
         }
         .stFileUploader > label > div:first-child {
-            display: none; /* ラベル非表示 */
+            display: none;
         }
         .stFileUploader label span {
             font-size: 1.1rem;
@@ -102,13 +102,24 @@ def to_excel(df):
     headers = list(df.columns)
     ws.append(headers)
 
+    col_widths = {
+        'A': 9.0,
+        'B': 38.25,
+        'C': 9.0,
+        'D': 9.0,
+        'E': 9.0,
+        'F': 9.0
+    }
+
     for col_num, col in enumerate(headers, 1):
+        col_letter = ws.cell(row=1, column=col_num).column_letter
         cell = ws.cell(row=1, column=col_num)
         cell.font = header_font
         cell.fill = header_fill
         cell.alignment = Alignment(horizontal='center', vertical='center')
         cell.border = border
-        ws.column_dimensions[cell.column_letter].width = 14
+        if col_letter in col_widths:
+            ws.column_dimensions[col_letter].width = col_widths[col_letter]
 
     for row in df.itertuples(index=False):
         ws.append(row)
