@@ -43,6 +43,9 @@ st.markdown("""
             color: #666;
             display: block;
         }
+        .stFileUploader div[role="button"] * {
+    font-size: 0 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
