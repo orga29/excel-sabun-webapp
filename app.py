@@ -5,7 +5,7 @@ from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
-st.set_page_config(page_title="温市Excel差分ツール", page_icon="🌿", layout="centered")
+st.set_page_config(page_title="Excel差分ツール", page_icon="🌿", layout="centered")
 st.markdown("""
     <style>
         body {
@@ -23,18 +23,28 @@ st.markdown("""
             font-size: 1.1rem;
             font-weight: bold;
         }
-        .stFileUploader div[role="button"]::after {
-            content: "ファイルをここにドラッグ または クリックして選択（最大200MB・.xlsx）";
+        .stFileUploader div[role="button"] {
+            font-size: 0px !important;
+            position: relative;
+        }
+        .stFileUploader div[role="button"]::before {
+            content: "ファイルをここにドラッグ またはクリックして選択";
+            font-size: 1rem;
             color: #333;
             display: block;
-            padding-top: 8px;
-            font-size: 0.9rem;
+            padding-bottom: 4px;
+        }
+        .stFileUploader div[role="button"]::after {
+            content: "※ 200MBまで／拡張子 .xlsx のみ対応";
+            font-size: 0.85rem;
+            color: #666;
+            display: block;
         }
     </style>
 """, unsafe_allow_html=True)
 
 st.image("logo.png", width=200)
-st.title("温市 Excel差分比較ツール")
+st.title("Excel差分比較ツール")
 
 st.markdown("""
 #### 📝 使い方：
@@ -101,8 +111,8 @@ def to_excel(df):
     ws = wb.active
     ws.title = '差分結果'
 
-    header_font = Font(bold=True, color="FFFFFF")
-    header_fill = PatternFill("solid", fgColor="4CAF50")
+    header_font = Font(bold=True, color="000000")
+    header_fill = PatternFill("solid", fgColor="CCFFCC")
     border = Border(left=Side(style='thin'), right=Side(style='thin'),
                     top=Side(style='thin'), bottom=Side(style='thin'))
 
