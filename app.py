@@ -5,57 +5,34 @@ from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
+# ページ設定（ロゴは非表示にしたので image は削除）
 st.set_page_config(page_title="Excel差分ツール", page_icon="🌿", layout="centered")
+
+# カスタムCSS（英語UI非表示＋日本語案内＋ロゴ削除）
 st.markdown("""
-    <style>
-        body {
-            background-color: #e6f4e6;
-        }
-        .main {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 2rem;
-        }
-        .stFileUploader > label > div:first-child {
-            display: none;
-        }
-        .stFileUploader label span {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        .stFileUploader div[role="button"] {
-            position: relative;
-            color: transparent !important;
-        }
-        .stFileUploader div[role="button"]::before {
-            content: "ファイルをここにドラッグ またはクリックして選択";
-            font-size: 1rem;
-            color: #333 !important;
-            position: absolute;
-            top: 20%;
-            left: 20%;
-            z-index: 10;
-        }
-        .stFileUploader div[role="button"]::after {
-            content: "※ 200MBまで／拡張子 .xlsx のみ対応";
-            font-size: 0.85rem;
-            color: #666 !important;
-            position: absolute;
-            bottom: 10%;
-            left: 20%;
-            z-index: 10;
-        }
-        .stFileUploader div[role="button"] * {
-            visibility: hidden !important;
-            display: none !important;
-            opacity: 0 !important;
-        }
-    </style>
+<style>
+    body {
+        background-color: #e6f4e6;
+    }
+    .main {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 2rem;
+    }
+    .upload-label {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 0.2rem;
+        display: block;
+    }
+    .stFileUploader {
+        margin-bottom: 2rem;
+    }
+</style>
 """, unsafe_allow_html=True)
 
-st.image("logo.png", width=200)
+# タイトル・案内文
 st.title("Excel差分比較ツール")
-
 st.markdown("""
 #### 📝 使い方：
 1. 「暫定データファイル」と「確定データファイル」を選んでください。
@@ -63,6 +40,14 @@ st.markdown("""
 3. Excelファイルとしてダウンロードも可能です。
 """)
 
+# ⬇ アップローダー（日本語ラベル付き）
+st.markdown('<label class="upload-label">📂 暫定データファイルをアップロード</label>', unsafe_allow_html=True)
+file1 = st.file_uploader("", type="xlsx", key="file1")
+
+st.markdown('<label class="upload-label">📂 確定データファイルをアップロード</label>', unsafe_allow_html=True)
+file2 = st.file_uploader("", type="xlsx", key="file2")
+
+# 差分計算
 def build_map(df: pd.DataFrame) -> dict:
     m = {}
     for _, row in df.iterrows():
@@ -163,9 +148,7 @@ def to_excel(df):
     output.seek(0)
     return output
 
-file1 = st.file_uploader("📂 暫定データファイル", type="xlsx")
-file2 = st.file_uploader("📂 確定データファイル", type="xlsx")
-
+# ファイルが両方ある場合のみ処理
 if file1 and file2:
     df1 = pd.read_excel(file1, header=None).iloc[4:].reset_index(drop=True)
     df2 = pd.read_excel(file2, header=None).iloc[4:].reset_index(drop=True)
