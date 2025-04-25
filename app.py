@@ -138,14 +138,12 @@ def to_excel(df):
         for col_num in range(1, len(headers) + 1):
             cell = ws.cell(row=ws.max_row, column=col_num)
             cell.border = border
-            if 3 <= col_num <= 6:
-                cell.alignment = Alignment(horizontal='center')
-            elif isinstance(cell.value, int):
-                cell.alignment = Alignment(horizontal='right')
-            else:
-                cell.alignment = Alignment(horizontal='left')
+            cell.alignment = Alignment(horizontal='center') if 3 <= col_num <= 6 else Alignment(horizontal='left')
+            if col_num == 5:  # E列（仕分後残）を太字に
+                cell.font = Font(bold=True)
             if idx % 2 == 0:
                 cell.fill = alt_fill
+        ws.row_dimensions[ws.max_row].height = 14.5  # 各行の高さを14.5に設定
 
     # 最終行の1行下に日付付きコメントを挿入
     date_str = datetime.datetime.today().strftime('%-m/%-d(%a)').replace('Mon', '月').replace('Tue', '火').replace('Wed', '水').replace('Thu', '木').replace('Fri', '金').replace('Sat', '土').replace('Sun', '日')
