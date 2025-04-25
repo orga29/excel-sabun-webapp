@@ -164,3 +164,4 @@ if file1 and file2:
 
     excel_data = to_excel(diff_df)
     st.download_button("📅 差分をExcelでダウンロード", excel_data, file_name=f"差分_{datetime.date.today()}.xlsx")
+
