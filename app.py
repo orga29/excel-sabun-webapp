@@ -5,10 +5,10 @@ from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
-# ページ設定（ロゴは非表示にしたので image は削除）
+# ページ設定
 st.set_page_config(page_title="Excel差分ツール", page_icon="🌿", layout="centered")
 
-# カスタムCSS（英語UI非表示＋日本語案内＋ロゴ削除）
+# カスタムCSS（ロゴ非表示、ファイルアップロード日本語化トライアル）
 st.markdown("""
 <style>
     body {
@@ -31,23 +31,22 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# タイトル・案内文
+# タイトルと説明
 st.title("Excel差分比較ツール")
 st.markdown("""
-#### 📝 使い方：
+#### 📜 使い方：
 1. 「暫定データファイル」と「確定データファイル」を選んでください。
 2. 差分を自動で抽出して表示します。
 3. Excelファイルとしてダウンロードも可能です。
 """)
 
-# ⬇ アップローダー（日本語ラベル付き）
+# アップローダー
 st.markdown('<label class="upload-label">📂 暫定データファイルをアップロード</label>', unsafe_allow_html=True)
 file1 = st.file_uploader("", type="xlsx", key="file1")
 
 st.markdown('<label class="upload-label">📂 確定データファイルをアップロード</label>', unsafe_allow_html=True)
 file2 = st.file_uploader("", type="xlsx", key="file2")
 
-# 差分計算
 def build_map(df: pd.DataFrame) -> dict:
     m = {}
     for _, row in df.iterrows():
@@ -138,7 +137,10 @@ def to_excel(df):
         for col_num in range(1, len(headers) + 1):
             cell = ws.cell(row=ws.max_row, column=col_num)
             cell.border = border
-            if isinstance(cell.value, int):
+            # ✅ C列〜F列を中央揃え
+            if 3 <= col_num <= 6:
+                cell.alignment = Alignment(horizontal='center')
+            elif isinstance(cell.value, int):
                 cell.alignment = Alignment(horizontal='right')
             else:
                 cell.alignment = Alignment(horizontal='left')
@@ -148,7 +150,6 @@ def to_excel(df):
     output.seek(0)
     return output
 
-# ファイルが両方ある場合のみ処理
 if file1 and file2:
     df1 = pd.read_excel(file1, header=None).iloc[4:].reset_index(drop=True)
     df2 = pd.read_excel(file2, header=None).iloc[4:].reset_index(drop=True)
