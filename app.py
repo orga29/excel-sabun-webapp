@@ -107,6 +107,7 @@ def to_excel(df):
 
     header_font = Font(bold=True, color="000000")
     header_fill = PatternFill("solid", fgColor="CCFFCC")
+    alt_fill = PatternFill("solid", fgColor="F2F2F2")
     border = Border(left=Side(style='thin'), right=Side(style='thin'),
                     top=Side(style='thin'), bottom=Side(style='thin'))
 
@@ -132,18 +133,23 @@ def to_excel(df):
         if col_letter in col_widths:
             ws.column_dimensions[col_letter].width = col_widths[col_letter]
 
-    for row in df.itertuples(index=False):
+    for idx, row in enumerate(df.itertuples(index=False), start=2):
         ws.append(row)
         for col_num in range(1, len(headers) + 1):
             cell = ws.cell(row=ws.max_row, column=col_num)
             cell.border = border
-            # ✅ C列〜F列を中央揃え
             if 3 <= col_num <= 6:
                 cell.alignment = Alignment(horizontal='center')
             elif isinstance(cell.value, int):
                 cell.alignment = Alignment(horizontal='right')
             else:
                 cell.alignment = Alignment(horizontal='left')
+            if idx % 2 == 0:
+                cell.fill = alt_fill
+
+    # 最終行の1行下に日付付きコメントを挿入
+    date_str = datetime.datetime.today().strftime('%-m/%-d(%a)').replace('Mon', '月').replace('Tue', '火').replace('Wed', '水').replace('Thu', '木').replace('Fri', '金').replace('Sat', '土').replace('Sun', '日')
+    ws.cell(row=ws.max_row + 2, column=2, value=f"{date_str}仕分け分")
 
     output = BytesIO()
     wb.save(output)
@@ -159,4 +165,4 @@ if file1 and file2:
     st.dataframe(diff_df, use_container_width=True)
 
     excel_data = to_excel(diff_df)
-    st.download_button("📥 差分をExcelでダウンロード", excel_data, file_name=f"差分_{datetime.date.today()}.xlsx")
+    st.download_button("📅 差分をExcelでダウンロード", excel_data, file_name=f"差分_{datetime.date.today()}.xlsx")
