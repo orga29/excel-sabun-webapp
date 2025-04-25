@@ -140,7 +140,10 @@ def to_excel(df):
         for col_num in range(1, len(headers) + 1):
             cell = ws.cell(row=ws.max_row, column=col_num)
             cell.border = border
-            cell.alignment = Alignment(horizontal='center', vertical='center')
+            if col_num in (1, 2):
+                cell.alignment = Alignment(horizontal='left', vertical='center')
+            else:
+                cell.alignment = Alignment(horizontal='center', vertical='center')
             if col_num == 5:  # E列（仕分後残）を太字に
                 cell.font = Font(bold=True)
             if idx % 2 == 0:
