@@ -133,12 +133,14 @@ def to_excel(df):
         if col_letter in col_widths:
             ws.column_dimensions[col_letter].width = col_widths[col_letter]
 
+    ws.row_dimensions[1].height = 18.0  # ヘッダー行の高さ
+
     for idx, row in enumerate(df.itertuples(index=False), start=2):
         ws.append(row)
         for col_num in range(1, len(headers) + 1):
             cell = ws.cell(row=ws.max_row, column=col_num)
             cell.border = border
-            cell.alignment = Alignment(horizontal='center') if 3 <= col_num <= 6 else Alignment(horizontal='left')
+            cell.alignment = Alignment(horizontal='center', vertical='center')
             if col_num == 5:  # E列（仕分後残）を太字に
                 cell.font = Font(bold=True)
             if idx % 2 == 0:
@@ -164,4 +166,3 @@ if file1 and file2:
 
     excel_data = to_excel(diff_df)
     st.download_button("📅 差分をExcelでダウンロード", excel_data, file_name=f"差分_{datetime.date.today()}.xlsx")
-
